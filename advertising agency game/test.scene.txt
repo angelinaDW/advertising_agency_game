@@ -1,0 +1,7 @@
+Frame 1
+
+voice_acting: acting1.mp3
+music: music.mp3
+bg: bg1.png
+endframe: on_voice_acting_over
+

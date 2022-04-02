@@ -1,0 +1,13 @@
+Frame 1
+
+voice_acting: acting1.mp3
+music: music.mp3
+bg: bg1.png
+endframe: on_voice_acting_over
+
+Frame 2
+
+voice_acting: acting2.mp3
+bg: bgimage2.png
+animation: animation2.webp
+endframe: on_voice_acting_over
