@@ -6,8 +6,9 @@ PImage bg;
 SoundFile music;
 SoundFile voiceClip;
 Movie animation;
-
+boolean loop = false;
 int currentFrameIndex = 0;
+
 
 void setup()
 {
@@ -19,20 +20,29 @@ void setup()
 
 void onChangeFrame() // Updates all of the display variables to reflect the current frame
 {
-    if (parser.allFrames.get(currentFrameIndex).bg != null) bg = parser.allFrames.get(currentFrameIndex).bg;
-    if (parser.allFrames.get(currentFrameIndex).music != null) {
-      if (music != null) music.stop();
-      music = parser.allFrames.get(currentFrameIndex).music;
-      music.loop();
+    try { 
+      if (parser.allFrames.get(currentFrameIndex).bg != null) bg = parser.allFrames.get(currentFrameIndex).bg;
+      if (parser.allFrames.get(currentFrameIndex).music != null) {
+        if (music != null) music.stop();
+        music = parser.allFrames.get(currentFrameIndex).music;
+        music.loop();
+      }
+      if (parser.allFrames.get(currentFrameIndex).voiceActingAudio != null) { 
+        voiceClip = parser.allFrames.get(currentFrameIndex).voiceActingAudio;
+        voiceClip.play();
+      }
+      if (parser.allFrames.get(currentFrameIndex).animation != null) {
+        animation = parser.allFrames.get(currentFrameIndex).animation;
+      }
     }
-    if (parser.allFrames.get(currentFrameIndex).voiceActingAudio != null) { 
-      voiceClip = parser.allFrames.get(currentFrameIndex).voiceActingAudio;
-      voiceClip.play();
+    catch (IndexOutOfBoundsException e) // if we reached the end...
+    {
+      if (loop) {
+        currentFrameIndex = 0;
+        onChangeFrame();
+      }
+      else exit();
     }
-    if (parser.allFrames.get(currentFrameIndex).animation != null) {
-      animation = parser.allFrames.get(currentFrameIndex).animation;
-    }
-    
     
 }
 void draw()
