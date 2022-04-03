@@ -2,6 +2,7 @@ import controlP5.*;
 
 ControlP5 cp5;
 ArrayList<FrameGUI> frameGUIs;
+ArrayList<Frame> frames;
 void setup()
 {
   frameGUIs = new ArrayList<FrameGUI>();
@@ -92,6 +93,16 @@ public class FrameGUI extends Controller
    previewBox = new PreviewCanvas(loadImage("test.jpg"), theGroup);
    previewBox.pre();
    cp5.addCanvas(previewBox);
+ }
+ 
+ public void add_BG_IMG(int value)
+ {
+   selectInput("Choose a background image", "bgIMG_selected");
+ }
+ 
+ private void bgIMG_selected(File selection)
+ {
+   
  }
  
 }
