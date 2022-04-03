@@ -2,10 +2,15 @@ import controlP5.*;
 
 ControlP5 cp5;
 ArrayList<FrameGUI> frameGUIs;
+ArrayList<Frame> frames;
+
+public int mostRecentlyAccessedFrame;
 void setup()
 {
+  print(sketchPath());
   frameGUIs = new ArrayList<FrameGUI>();
-  size(1920, 1080);
+  frames = new ArrayList<Frame>();
+
   cp5 = new ControlP5(this);
 
   cp5.addButton("UploadImage");
@@ -16,9 +21,39 @@ void setup()
   //Todo--make adding multiple frames work. And then add delete and add buttons for frames
 }
 
+void settings()
+{
+    size(1920, 1080);
+}
 void draw()
 {
 }
+
+ void imgSelected(File selection)
+ {
+   print("uwu");
+   Frame f;
+   try {
+     f =  frames.get(mostRecentlyAccessedFrame - 1);
+     f.bg = loadImage(selection.getAbsolutePath());
+  
+   }
+   catch (Exception e)
+   {
+     print("made it to the part");
+     println(selection.getAbsolutePath());
+     //print(e);
+     f = new Frame();
+     f.bg = loadImage(selection.getAbsolutePath());
+     frames.add(f);
+     print("here");
+     mostRecentlyAccessedFrame = frames.size();
+     print(frames);
+   }
+   frameGUIs.get(mostRecentlyAccessedFrame - 1).UpdatePreview(f.bg);
+   
+ 
+ }
 
 public void UploadImage(int value)
 {
@@ -60,6 +95,12 @@ public class FrameGUI extends Controller
  Textfield subtitles;
  PreviewCanvas previewBox;
  
+ public void UpdatePreview(PImage w)
+{
+  previewBox.img = w;
+}
+
+ 
  public FrameGUI(ControlP5 theControlP5 , String theName, int id, int x, int y)
  {
    super(theControlP5, theName);
@@ -76,10 +117,28 @@ public class FrameGUI extends Controller
                 ;
    
    addBGimg = theControlP5.addButton("add_BG_IMG" + id).setGroup(theGroup).setPosition(56,40);
+   addBGimg.onClick(new CallbackListener() {
+     public void controlEvent(CallbackEvent theEvent)
+     {
+         mostRecentlyAccessedFrame = Integer.parseInt(theEvent.getController().getName().substring(10, theEvent.getController().getName().length()));
+         selectInput("Upload an image", "imgSelected");
+     }
+     
+
+
+ 
+   });
    addBGM = theControlP5.addButton("add_BGM" + id).setGroup(theGroup).setPosition(146,40);
    addVoiceClip = theControlP5.addButton("add_voiceclip" + id).setGroup(theGroup).setPosition(236,40);
    addAnimation = theControlP5.addButton("add_animation" + id).setGroup(theGroup).setPosition(326,40);
    viewPreviewAnim = theControlP5.addButton("view_preview" + id).setGroup(theGroup).setPosition(416,40);
+   viewPreviewAnim.onClick(new CallbackListener() {
+     public void controlEvent(CallbackEvent theEvent)
+     {
+          print("oi");
+         PreviewAd ad = new PreviewAd(sketchPath());
+     }
+   });
    
    subtitles = cp5.addTextfield("subtitles" + id)
                   .setPosition(250,80)
@@ -94,11 +153,17 @@ public class FrameGUI extends Controller
    cp5.addCanvas(previewBox);
  }
  
+ public void add_BG_IMG(int value)
+ {
+   selectInput("Choose a background image", "bgIMG_selected");
+ }
+
+
 }
 
 public class PreviewCanvas extends Canvas
 {
-  PImage img;
+  public PImage img;
   int x = 10;
   int y = 116;
   int maxW = 223;
