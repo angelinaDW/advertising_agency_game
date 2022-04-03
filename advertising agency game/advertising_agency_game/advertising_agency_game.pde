@@ -38,8 +38,11 @@ void onChangeFrame() // Updates all of the display variables to reflect the curr
     catch (IndexOutOfBoundsException e) // if we reached the end...
     {
       if (loop) {
-        currentFrameIndex = 0;
-        onChangeFrame();
+        if (parser.allFrames.size() != 0)
+        {
+          currentFrameIndex = 0;
+          onChangeFrame();
+        }
       }
       else exit();
     }
