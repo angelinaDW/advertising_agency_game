@@ -10,7 +10,8 @@ class PreviewAd extends PApplet
   Movie animation;
   boolean loop = true;
   int currentFrameIndex = 0;
-  String sketchPath;
+  String sketchPath = "";
+  ArrayList<Frame> frames;
   
   public PreviewAd (String sketchPath)
   {
@@ -18,11 +19,35 @@ class PreviewAd extends PApplet
     this.sketchPath = sketchPath;
     PApplet.runSketch(new String[] {this.getClass().getSimpleName()}, this);
   }
+  
+  public PreviewAd(ArrayList<Frame> frames)
+  {
+    super();
+    this.frames = frames;
+    PApplet.runSketch(new String[] {this.getClass().getSimpleName()}, this);
+  }
+  
+  public PreviewAd(Frame f)
+  {
+    super();
+    this.frames = new ArrayList<Frame>();
+    this.frames.add(f);
+    PApplet.runSketch(new String[] {this.getClass().getSimpleName()}, this);
+  }
+  
   public void setup ()
   {
-    parser = new FrameParser(this, "test.scene");
-    parser.loadFrames(sketchPath);
-    onChangeFrame();
+    if (sketchPath != "")
+    {
+      parser = new FrameParser(this, "test.scene");
+      parser.loadFrames(sketchPath);
+      onChangeFrame();
+    }
+    else
+    {
+      parser = new FrameParser(this, frames);
+      onChangeFrame();
+    }
     
   }
   
@@ -73,7 +98,7 @@ class PreviewAd extends PApplet
     if (bg != null) image(bg, 0, 0);
     if (animation != null) image(animation, 0, 0);
     
-    if (!voiceClip.isPlaying())
+    if (voiceClip != null && !voiceClip.isPlaying())
     {
       currentFrameIndex += 1;
   
@@ -102,6 +127,12 @@ class FrameParser
   {
     reference = w;
     fileName = filename;
+  }
+  
+  public FrameParser(PApplet w, ArrayList<Frame> frames)
+  {
+    reference = w;
+    allFrames = frames;
   }
   
   public boolean loadFrames(String sketchPath)

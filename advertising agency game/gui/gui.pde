@@ -13,7 +13,7 @@ void setup()
 
   cp5 = new ControlP5(this);
 
-  cp5.addButton("UploadImage");
+  cp5.addButton("Preview");
   frameGUIs.add(new FrameGUI(cp5, "test", 1, 500, 400));
   frameGUIs.add(new FrameGUI(cp5, "test2", 2, 600, 900));
   //frameGUIs.get(1).setPosition(800, 400);
@@ -54,11 +54,31 @@ void draw()
    
  
  }
+ 
+ void voiceClipSelected(File selection)
+ {
+   print("uwu");
+   Frame f;
+   f =  frames.get(mostRecentlyAccessedFrame - 1);
+   f.voiceActingAudio = new SoundFile(this, selection.getAbsolutePath());
+   
+ 
+ }
+ 
+ void musicClipSelected(File selection)
+ {
+   print("uwu");
+   Frame f;
+   f =  frames.get(mostRecentlyAccessedFrame - 1);
+   f.music = new SoundFile(this, selection.getAbsolutePath());
+   
+ 
+ }
 
-public void UploadImage(int value)
+public void Preview(int value)
 {
   print("button pressed!");
-  selectInput("Upload an image", "fileSelected");
+  PreviewAd p = new PreviewAd(frames);
 }
 
 void fileSelected(File selection) {
@@ -91,6 +111,7 @@ public class FrameGUI extends Controller
  Button addVoiceClip;
  Button addAnimation;
  Button viewPreviewAnim;
+ Frame frame;
  
  Textfield subtitles;
  PreviewCanvas previewBox;
@@ -106,6 +127,9 @@ public class FrameGUI extends Controller
    super(theControlP5, theName);
    this.id = id;
    this.setPosition(x, y);
+   this.frame = new Frame();
+   frames.add(this.frame);
+   
    
    theGroup = cp5.addGroup("theGroup"+id)
                 .setPosition(this.getPosition()[0],this.getPosition()[1])
@@ -129,14 +153,30 @@ public class FrameGUI extends Controller
  
    });
    addBGM = theControlP5.addButton("add_BGM" + id).setGroup(theGroup).setPosition(146,40);
+   addBGM.onClick(new CallbackListener() {
+     public void controlEvent(CallbackEvent theEvent)
+     {
+       print("here!!!");
+         mostRecentlyAccessedFrame = Integer.parseInt(theEvent.getController().getName().substring(7, theEvent.getController().getName().length()));
+         selectInput("Upload a music clip", "musicClipSelected");
+     }
+   });
    addVoiceClip = theControlP5.addButton("add_voiceclip" + id).setGroup(theGroup).setPosition(236,40);
+   addVoiceClip.onClick(new CallbackListener() {
+     public void controlEvent(CallbackEvent theEvent)
+     {
+         mostRecentlyAccessedFrame = Integer.parseInt(theEvent.getController().getName().substring(13, theEvent.getController().getName().length()));
+         selectInput("Upload a voice clip", "voiceClipSelected");
+     }
+   });
    addAnimation = theControlP5.addButton("add_animation" + id).setGroup(theGroup).setPosition(326,40);
    viewPreviewAnim = theControlP5.addButton("view_preview" + id).setGroup(theGroup).setPosition(416,40);
    viewPreviewAnim.onClick(new CallbackListener() {
      public void controlEvent(CallbackEvent theEvent)
      {
+          mostRecentlyAccessedFrame = Integer.parseInt(theEvent.getController().getName().substring(12, theEvent.getController().getName().length()));
           print("oi");
-         PreviewAd ad = new PreviewAd(sketchPath());
+         PreviewAd ad = new PreviewAd(frames.get(mostRecentlyAccessedFrame - 1) );
      }
    });
    
@@ -180,6 +220,6 @@ public class PreviewCanvas extends Canvas
     public void draw(PGraphics pg) {
     // renders a square with randomly changing colors
     // make changes here.
-    pg.image(img, x, y, maxW, maxH); // todo: make it relative to position of group
+    if (img != null) pg.image(img, x, y, maxW, maxH); // todo: make it relative to position of group
   }
 }
