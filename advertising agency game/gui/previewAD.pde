@@ -1,7 +1,6 @@
 import processing.sound.*;
 import processing.video.*;
 import com.jogamp.newt.opengl.GLWindow;
-import processing.awt.PSurfaceAWT.SmoothCanvas;
 
 
 import javax.swing.JFrame;
