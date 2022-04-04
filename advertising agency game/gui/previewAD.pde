@@ -1,5 +1,19 @@
 import processing.sound.*;
 import processing.video.*;
+import com.jogamp.newt.opengl.GLWindow;
+import processing.awt.PSurfaceAWT.SmoothCanvas;
+
+
+import javax.swing.JFrame;
+
+import processing.core.PApplet;
+import processing.core.PConstants;
+import processing.core.PGraphics;
+import processing.core.PImage;
+import processing.core.PSurfaceNone;
+import processing.event.KeyEvent;
+import processing.event.MouseEvent;
+import java.awt.event.*;
 
 class PreviewAd extends PApplet
 {
@@ -12,6 +26,10 @@ class PreviewAd extends PApplet
   int currentFrameIndex = 0;
   String sketchPath = "";
   ArrayList<Frame> frames;
+  
+  @Override
+  public void exitActual() {
+  }
   
   public PreviewAd (String sketchPath)
   {
@@ -37,6 +55,11 @@ class PreviewAd extends PApplet
   
   public void setup ()
   {
+
+    if (getGraphics().isGL()) {
+    final com.jogamp.newt.Window w = (com.jogamp.newt.Window) getSurface().getNative();
+    w.setDefaultCloseOperation(com.jogamp.newt.Window.WindowClosingMode.DISPOSE_ON_CLOSE);
+    }
     if (sketchPath != "")
     {
       parser = new FrameParser(this, "test.scene");
@@ -53,7 +76,7 @@ class PreviewAd extends PApplet
   
   public void settings()
   {
-    size(640, 480);
+    size(640, 480, OPENGL);
   }
 
   void onChangeFrame() // Updates all of the display variables to reflect the current frame

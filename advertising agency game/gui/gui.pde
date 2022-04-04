@@ -1,4 +1,5 @@
 import controlP5.*;
+import processing.opengl.*;
 
 ControlP5 cp5;
 ArrayList<FrameGUI> frameGUIs;
@@ -14,8 +15,10 @@ void setup()
   cp5 = new ControlP5(this);
 
   cp5.addButton("Preview");
-  frameGUIs.add(new FrameGUI(cp5, "test", 1, 500, 400));
-  frameGUIs.add(new FrameGUI(cp5, "test2", 2, 600, 900));
+
+  new FrameGUI(cp5, "test", 1, 500, 400);
+  new FrameGUI(cp5, "test2", 2, 600, 900);
+
   //frameGUIs.get(1).setPosition(800, 400);
 
   //Todo--make adding multiple frames work. And then add delete and add buttons for frames
@@ -23,7 +26,7 @@ void setup()
 
 void settings()
 {
-    size(1920, 1080);
+    size(1920, 1080, OPENGL);
 }
 void draw()
 {
@@ -121,6 +124,11 @@ public class FrameGUI extends Controller
   previewBox.img = w;
 }
 
+public void Delete()
+{
+  frames.remove(id - 1);
+  frameGUIs.remove(id - 1);
+}
  
  public FrameGUI(ControlP5 theControlP5 , String theName, int id, int x, int y)
  {
