@@ -4,6 +4,7 @@ import processing.opengl.*;
 ControlP5 cp5;
 ArrayList<FrameGUI> frameGUIs;
 ArrayList<Frame> frames;
+Accordion accordion;
 
 public int mostRecentlyAccessedFrame;
 void setup()
@@ -15,10 +16,21 @@ void setup()
   cp5 = new ControlP5(this);
 
   cp5.addButton("Preview");
-
-  new FrameGUI(cp5, "test", 1, 500, 400);
-  new FrameGUI(cp5, "test2", 2, 600, 900);
-
+  
+  cp5.addGroup("Frames");
+  
+  accordion = cp5.addAccordion("acc")
+                 .setPosition(width/2 - 500,40)
+                 .setWidth(1000)
+                 .setHeight(height)
+                 ;
+                 
+ accordion.setCollapseMode(Accordion.MULTI);
+  
+  new FrameGUI(cp5, "test", 1);
+  new FrameGUI(cp5, "test2", 2);
+  
+  accordion.addItem(frameGUIs.get(0).theGroup).addItem(frameGUIs.get(1).theGroup);
   //frameGUIs.get(1).setPosition(800, 400);
 
   //Todo--make adding multiple frames work. And then add delete and add buttons for frames
@@ -115,7 +127,7 @@ public class FrameGUI extends Controller
  Button addAnimation;
  Button viewPreviewAnim;
  Frame frame;
- 
+
  Textfield subtitles;
  PreviewCanvas previewBox;
  
@@ -130,17 +142,17 @@ public void Delete()
   frameGUIs.remove(id - 1);
 }
  
- public FrameGUI(ControlP5 theControlP5 , String theName, int id, int x, int y)
+ public FrameGUI(ControlP5 theControlP5 , String theName, int id)
  {
    super(theControlP5, theName);
    this.id = id;
-   this.setPosition(x, y);
+   //this.setPosition(x, y);
    this.frame = new Frame();
    frames.add(this.frame);
+   frameGUIs.add(this);
    
    
    theGroup = cp5.addGroup("theGroup"+id)
-                .setPosition(this.getPosition()[0],this.getPosition()[1])
                 .setWidth(600)
                 .activateEvent(true)
                 .setBackgroundColor(color(255,80))
@@ -216,18 +228,18 @@ public class PreviewCanvas extends Canvas
   int y = 116;
   int maxW = 223;
   int maxH = 170;
+  Group parent;
   
   public PreviewCanvas(PImage backgroundImage, Group parent)
   {
     super();
-    x += parent.getPosition()[0];
-    y += parent.getPosition()[1];
+    this.parent = parent;
     img = backgroundImage;
   }
   
     public void draw(PGraphics pg) {
     // renders a square with randomly changing colors
     // make changes here.
-    if (img != null) pg.image(img, x, y, maxW, maxH); // todo: make it relative to position of group
+    if (img != null) pg.image(img, x + parent.getAbsolutePosition()[0], y + parent.getAbsolutePosition()[1], maxW, maxH); // todo: make it relative to position of group
   }
 }

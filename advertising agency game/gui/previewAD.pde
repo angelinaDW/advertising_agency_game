@@ -28,6 +28,7 @@ class PreviewAd extends PApplet
   
   @Override
   public void exitActual() {
+    
   }
   
   public PreviewAd (String sketchPath)
